@@ -19,10 +19,14 @@ class Window(Frame):
 
     def create_widgets(self):
 
-        self.label_name = Label(self)
-        self.label_name['text'] = "hello"
-        # self.label_name['background'] = "white"                       #背景颜色
-        # self.label_name['width'] = 60                                 #宽度
+
+        self.label_1 = Label(self)
+        self.label_1['text'] = '提示：'
+
+        self.label_2 = Label(self)
+        self.label_2['text'] = "hello"
+        # self.label_2['background'] = "white"                       #背景颜色
+        # self.label_2['width'] = 60                                 #宽度
 
         self.confrom_button_1 = Button(self)
         self.confrom_button_1['text'] = self.confrom_moji
@@ -62,19 +66,25 @@ class Window(Frame):
         self.text_box_2['yscrollcommand'] = Scrollbar(self, orient=VERTICAL)
 
         # 部件在窗口里布局
-        self.label_name.grid(row=0, column=0)
+        self.label_1.grid(row=0, column=0)
+        self.label_2.grid(row=0, column=1, sticky=W)
 
-        self.confrom_button_1.grid(row=0, column=1)
-        self.input_button_1.grid(row=1, column=1)
-        self.cancel_button_1.grid(row=0, column=2)
-        self.clear_button.grid(row=0, column=3)
-        
-        self.text_box_1.grid(row=1, column=0)
-        self.text_box_2.grid(row=2, column=0, columnspan=1)
+        self.confrom_button_1.grid(row=1, column=0)
+        self.cancel_button_1.grid(row=1, column=1)
+        self.clear_button.grid(row=1, column=2)
+        self.input_button_1.grid(row=2, column=2, sticky=S)
+
+        # sticky= 
+        # 默认居中对齐
+        # N 上对齐 S 下对齐 E 右对齐 W 左对齐
+        # N+W
+
+        self.text_box_1.grid(row=2, column=1)
+        self.text_box_2.grid(row=3, column=1, columnspan=1)
 
         # self.bind("<Button-1>",self.callback())
 
-    def content_of_text_box(self, Element):
+    def content_of_Element_box(self, Element):
         return f"{Element['text']}\n"
         
     def confrom_event(self):
@@ -82,19 +92,19 @@ class Window(Frame):
         row = self.text_box_2.get('0.0', 'end').count('\n')
         # 将光标移至最后一行
         self.text_box_2.mark_set('insert', "%d.0" % (row+1))
-        if self.label_name['text'] == "you clicked it" or self.label_name['text'] == "you have clicked it":
-            self.label_name['text'] = "you have clicked it"
+        if self.label_2['text'] == "you clicked it" or self.label_2['text'] == "you have clicked it":
+            self.label_2['text'] = "you have clicked it"
             self.text_box_2.insert(
-                'insert', self.content_of_text_box(self.label_name))
+                'insert', self.content_of_Element_box(self.label_2))
         else:
-            self.label_name['text'] = "you clicked it"
+            self.label_2['text'] = "you clicked it"
             self.text_box_2.insert(
-                'insert', self.content_of_text_box(self.label_name))
+                'insert', self.content_of_Element_box(self.label_2))
 
     def cancel_event(self):
-        self.label_name['text'] = "you canceled"
+        self.label_2['text'] = "you canceled"
         self.text_box_2.insert(
-            'insert', self.content_of_text_box(self.label_name))
+            'insert', self.content_of_Element_box(self.label_2))
 
     # 清除文本框里的内容
     def clear_event(self):
@@ -103,9 +113,12 @@ class Window(Frame):
     # 传递文本框中输入的内容
     def input_text(self):
         self.Str = self.text_box_1.get('0.0', 'end')
-
-        # 将输入的内容在文本框2里显示
-        self.text_box_2.insert('insert', self.Str)
+        if self.Str != '':
+            # 将输入的内容在文本框2里显示
+            self.text_box_2.insert('insert', self.Str)
+        else:
+            self.text_box_2.insert('insert', '')
+        self.Str = ''
 
 
     def get_text(self, Element):
@@ -116,6 +129,10 @@ class Window(Frame):
         if self.text_box_2.get('0.0', 'end') != '':
             self.confrom_button_1['text'] = "正在输入..."
 
+    # 空操作
+    def do_nothing(self):
+        pass
+
     def callback(self, event):
         return [event.x, event.y]
 
@@ -124,9 +141,9 @@ if __name__ == "__main__":
     root = Tk()
     my_app = Window(root)
     menubar = Menu(root)
-    menubar.add_command(label="文件")
-    menubar.add_command(label="编辑")
-    menubar.add_command(label="操作")
+    menubar.add_command(label="文件", command=my_app.do_nothing)
+    menubar.add_command(label="编辑", command=my_app.do_nothing)
+    menubar.add_command(label="操作", command=my_app.do_nothing)
     menubar["background"] = "blue"
     root.wm_title("My App")
     root.geometry("720x540")
