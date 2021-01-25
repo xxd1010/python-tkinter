@@ -2,6 +2,20 @@ from tkinter import *
 import string
 import pretty_errors
 
+
+
+
+class Function():
+
+    def geometry(self, width, height, xs=10, ys=10):
+        Xs = 10
+        Ys = 10
+        if xs != Xs or ys != Ys:
+            xs=int(width/2-10)
+            ys=int(height/2-10)
+        return f"{width}x{height}+{xs}+{ys}"
+
+
 class MsgWindow(Frame):
     win_label = "通知"
 
@@ -15,7 +29,10 @@ class MsgWindow(Frame):
 
         pass
 
+
 class Window(Frame):
+
+    new_fun = Function()
 
     confrom_moji = "确认"
     cancel_moji = '取消'
@@ -24,7 +41,6 @@ class Window(Frame):
 
     Str = ''
 
-
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.master = master
@@ -32,6 +48,8 @@ class Window(Frame):
         self.pack(side='top')
 
     def create_widgets(self):
+
+
 
         self.label_1 = Label(self)
         self.label_1['text'] = '提示：'
@@ -43,143 +61,187 @@ class Window(Frame):
         # 宽度
         # self.label_2['width'] = 60
 
-        self.text_box_1 = Text(self)
+
+
+        self.output_text_box = Text(self)
         # 字体 (family:字体名, size:大小, weight:字重(normal/bold), slant:倾斜(roman/italic), underline:下划线(True/False), overstrike:删除线(True/False))
-        self.text_box_1['font'] = ('Microsoft YaHei UI', 10)
+        self.output_text_box['font'] = ('Microsoft YaHei UI', 10)
         # 文本框高度 单位 行
-        self.text_box_1['height'] = 5
+        self.output_text_box['height'] = 5
         # 文本框宽度 单位 字符数
-        self.text_box_1['width'] = 20
-        self.text_box_1['wrap'] = 'word'
-        self.text_box_1['borderwidth'] = 1
-        # self.text_box_1['highlighthickness'] = 1
-        self.text_box_1['highlightcolor'] = 'gray'
-        self.text_box_1['highlightbackground'] = 'yellow'
-        self.text_box_1['exportselection'] = 'no'
-        self.text_box_1['selectbackground'] = 'blue'
-        self.text_box_1['tabs'] = 2
-        self.text_box_1['yscrollcommand'] = Scrollbar(self, orient=VERTICAL)
+        self.output_text_box['width'] = 40
+        self.output_text_box['wrap'] = 'word'
+        self.output_text_box['borderwidth'] = 1
+        # self.output_text_box['highlighthickness'] = 1
+        self.output_text_box['highlightcolor'] = 'gray'
+        self.output_text_box['highlightbackground'] = 'yellow'
+        self.output_text_box['exportselection'] = 'no'
+        self.output_text_box['selectbackground'] = 'blue'
+        self.output_text_box['tabs'] = 2
+        self.output_text_box['yscrollcommand'] = Scrollbar(
+            self, orient=VERTICAL)
 
-        self.text_box_2 = Text(self)
-        self.text_box_2['font'] = ('Microsoft YaHei UI', 10)
-        self.text_box_2['height'] = 10
-        self.text_box_2['width'] = 20
-        self.text_box_2['wrap'] = 'word'
-        self.text_box_2['borderwidth'] = 1
-        self.text_box_2['highlightcolor'] = 'yellow'
-        self.text_box_2['yscrollcommand'] = Scrollbar(self, orient=VERTICAL)
-
+        self.input_text_box = Text(self)
+        self.input_text_box['font'] = ('Microsoft YaHei UI', 10)
+        self.input_text_box['height'] = 5
+        self.input_text_box['width'] = 40
+        self.input_text_box['wrap'] = 'word'
+        self.input_text_box['borderwidth'] = 1
+        self.input_text_box['highlightcolor'] = 'yellow'
+        self.input_text_box['yscrollcommand'] = Scrollbar(
+            self, orient=VERTICAL)
 
 
         self.confrom_button_1 = Button(self)
         self.confrom_button_1['text'] = self.confrom_moji
-        # 要执行的命令
-        self.confrom_button_1['command'] = self.confrom_event
+        # 要执行的命令 如果命令函数带有参数 则函数将被直接执行 可使用Lambda函数解决传参问题
+        self.confrom_button_1['command'] = lambda:self.confrom_event(self.output_text_box, self.label_2)
 
         self.input_button_1 = Button(self)
         self.input_button_1['text'] = "输入"
-        self.input_button_1['command'] = self.input_text
+        self.input_button_1['command'] = lambda:self.input_text(
+            self.input_text_box, self.output_text_box)
+
 
         self.cancel_button_1 = Button(self)
         self.cancel_button_1['text'] = self.cancel_moji
-        self.cancel_button_1['command'] = self.cancel_event
+        self.cancel_button_1['command'] = lambda:self.cancel_event(self.label_2, self.output_text_box)
 
-        self.clear_button = Button(self)
-        self.clear_button['text'] = self.clear_moji
-        self.clear_button['command'] = self.clear_event(self.text_box_2)
 
-        
+        self.clear_button_output = Button(self)
+        self.clear_button_output['text'] = self.clear_moji
+        self.clear_button_output['command'] = lambda:self.clear_event(self.output_text_box)
+
+
+        self.clear_button_input = Button(self)
+        self.clear_button_input['text'] = self.clear_moji
+        self.clear_button_input['command'] = lambda:self.clear_event(self.input_text_box)
+
+
+
         # 部件在窗口里布局
         self.label_1.grid(row=0, column=0)
-        self.label_2.grid(row=0, column=1, sticky=W)
+        self.label_2.grid(row=0, column=1)
+
 
         self.confrom_button_1.grid(row=2, column=0)
         self.cancel_button_1.grid(row=2, column=1)
-        self.clear_button_1.grid(row=2, column=2)
-        self.input_button_1.grid(row=4, column=0, sticky=S)
+        self.clear_button_output.grid(row=2, column=2)
+        self.input_button_1.grid(row=4, column=0)
+        self.clear_button_input.grid(row=4, column=1)
 
-        self.clear_button_2 = self.clear_button
-        self.clear_button_2['command'] = self.clear_event(self.text_box_1)
-        self.clear_button_2.grid(row=4, column=1)
 
         # sticky=
         # 默认居中对齐
         # N 上对齐 S 下对齐 E 右对齐 W 左对齐
         # N+W
-
-        self.text_box_1.grid(row=3, column=0)
-        self.text_box_2.grid(row=3, column=1)
+        self.output_text_box.grid(row=3, column=1)
+        self.input_text_box.grid(row=3, column=2)
 
         # self.bind("<Button-1>",self.callback())
 
-    def content_of_Element(self, Element):
+
+    def text_of_Element(self, Element):
         return f"{Element['text']}\n"
 
-    def confrom_event(self):
+
+
+    def confrom_event(self, Text_Box, Label):
         # 根据text中有多少个\n判断有多少行
-        row = self.text_box_2.get('0.0', 'end').count('\n')
+        row = (self.get_text(Text_Box)).count('\n')
         # 将光标移至最后一行
-        self.text_box_2.mark_set('insert', "%d.0" % (row+1))
-        if self.label_2['text'] == "you clicked it" or self.label_2['text'] == "you have clicked it":
-            self.label_2['text'] = "you have clicked it"
-            self.text_box_2.insert(
-                'insert', self.content_of_Element(self.label_2))
+        Text_Box.mark_set('insert', "%d.0" % (row+1))
+        if Label['text'] == "you clicked it" or Label['text'] == "you have clicked it":
+            Label['text'] = "you have clicked it"
+            Text_Box.insert('insert', self.text_of_Element(Label))
         else:
-            self.label_2['text'] = "you clicked it"
-            self.text_box_2.insert(
-                'insert', self.content_of_Element(self.label_2))
+            Label['text'] = "you clicked it"
+            Text_Box.insert('insert', self.text_of_Element(Label))
+
+
 
     # 取消事件
-    def cancel_event(self):
-        self.label_2['text'] = "you canceled"
-        self.text_box_2.insert(
-            'insert', self.content_of_Element(self.label_2))
+    def cancel_event(self, Label, Text_Box):
+        Label['text'] = "you canceled"
+        Text_Box.insert(
+            'insert', self.text_of_Element(Label))
+
+
 
     # 清除文本框里的内容
     def clear_event(self, Text_Box):
         Text_Box.delete('0.0', 'end')
 
+
+
     # 传递文本框中输入的内容
-    def input_text(self):
-        self.Str = self.text_box_1.get('0.0', 'end')
+    def input_text(self, Text_Box_1, Text_Box_2):
+        self.Str = self.get_text(Text_Box_1)
         if self.Str != '':
             # 将输入的内容在文本框2里显示
-            self.text_box_2.insert('insert', self.Str)
-        else:
-            self.text_box_2.insert('insert', '')
+            Text_Box_2.insert('insert', self.Str)
         self.Str = ''
 
-    def get_text(self, Element):
-        return Element.get('0.0', 'end')
 
-    def focus_in_text_box_2(self):
+
+    # 获取文本框的内容
+    def get_text(self, Text_Box):
+        return Text_Box.get('0.0', 'end')
+
+
+
+    def focus_in(self, Element_1, Element_2):
         # self.bind("<Button-1>", )
-        if self.text_box_2.get('0.0', 'end') != '':
-            self.confrom_button_1['text'] = "正在输入..."
+        if Element_1.get('0.0', 'end') != '':
+            Element_2['text'] = "正在输入..."
+
 
     # 空操作
     def do_nothing(self):
         pass
 
+
     def callback(self, event):
         return [event.x, event.y]
 
-    def show_msg_win(self):
+
+
+    def show_msg_win(self, title):
+
+
         root_msg = Tk()
-        
-        root_msg.wm_title("Msg")
-        root_msg.geometry("360x120")
 
-        msg_win = MsgWindow(root_msg)
+        if title == "login":
+            width = 300
+            height = 350
+        elif title == "friends":
+            width = 360
+            height = 120
+        elif title == "options":
+            width = 360
+            height = 120
+        elif title == "new_window":
+            width = 360
+            height = 120
 
 
-class Function():
+        xs_win = int(1920/2-width/2)
+        ys_win = int(1080/2-height/2)
+
+        root_msg.wm_title(title)
+        root_msg.geometry(self.new_fun.geometry(width, height, xs_win, ys_win))
 
 
+# 窗口大小
+width_mainwin = 720
+height_mainwin = 540
 
-    pass
+# 居中位置
+xs_mainwin = int(1920/2-width_mainwin/2)
+ys_mainwin = int(1080/2-height_mainwin/2)
 
 if __name__ == "__main__":
+
     root = Tk()
     my_app = Window(root)
 
@@ -191,7 +253,7 @@ if __name__ == "__main__":
     menubar["background"] = "blue"
 
     root.wm_title("My App")
-    root.geometry("720x540")
+    root.geometry(f"{width_mainwin}x{height_mainwin}+{xs_mainwin}+{ys_mainwin}")
     root.config(menu=menubar)
-    
+
     root.mainloop()
