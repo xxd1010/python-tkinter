@@ -43,23 +43,6 @@ class Window(Frame):
         # 宽度
         # self.label_2['width'] = 60
 
-        self.confrom_button_1 = Button(self)
-        self.confrom_button_1['text'] = self.confrom_moji
-        # 要执行的命令
-        self.confrom_button_1['command'] = self.confrom_event
-
-        self.input_button_1 = Button(self)
-        self.input_button_1['text'] = "输入"
-        self.input_button_1['command'] = self.input_text
-
-        self.cancel_button_1 = Button(self)
-        self.cancel_button_1['text'] = self.cancel_moji
-        self.cancel_button_1['command'] = self.cancel_event
-
-        self.clear_button = Button(self)
-        self.clear_button['text'] = self.clear_moji
-        self.clear_button['command'] = self.clear_event
-
         self.text_box_1 = Text(self)
         # 字体 (family:字体名, size:大小, weight:字重(normal/bold), slant:倾斜(roman/italic), underline:下划线(True/False), overstrike:删除线(True/False))
         self.text_box_1['font'] = ('Microsoft YaHei UI', 10)
@@ -86,22 +69,46 @@ class Window(Frame):
         self.text_box_2['highlightcolor'] = 'yellow'
         self.text_box_2['yscrollcommand'] = Scrollbar(self, orient=VERTICAL)
 
+
+
+        self.confrom_button_1 = Button(self)
+        self.confrom_button_1['text'] = self.confrom_moji
+        # 要执行的命令
+        self.confrom_button_1['command'] = self.confrom_event
+
+        self.input_button_1 = Button(self)
+        self.input_button_1['text'] = "输入"
+        self.input_button_1['command'] = self.input_text
+
+        self.cancel_button_1 = Button(self)
+        self.cancel_button_1['text'] = self.cancel_moji
+        self.cancel_button_1['command'] = self.cancel_event
+
+        self.clear_button = Button(self)
+        self.clear_button['text'] = self.clear_moji
+        self.clear_button['command'] = self.clear_event(self.text_box_2)
+
+        
         # 部件在窗口里布局
         self.label_1.grid(row=0, column=0)
         self.label_2.grid(row=0, column=1, sticky=W)
 
-        self.confrom_button_1.grid(row=1, column=0)
-        self.cancel_button_1.grid(row=1, column=1)
-        self.clear_button.grid(row=1, column=2)
-        self.input_button_1.grid(row=2, column=2, sticky=S)
+        self.confrom_button_1.grid(row=2, column=0)
+        self.cancel_button_1.grid(row=2, column=1)
+        self.clear_button_1.grid(row=2, column=2)
+        self.input_button_1.grid(row=4, column=0, sticky=S)
+
+        self.clear_button_2 = self.clear_button
+        self.clear_button_2['command'] = self.clear_event(self.text_box_1)
+        self.clear_button_2.grid(row=4, column=1)
 
         # sticky=
         # 默认居中对齐
         # N 上对齐 S 下对齐 E 右对齐 W 左对齐
         # N+W
 
-        self.text_box_1.grid(row=2, column=0)
-        self.text_box_2.grid(row=3, column=0)
+        self.text_box_1.grid(row=3, column=0)
+        self.text_box_2.grid(row=3, column=1)
 
         # self.bind("<Button-1>",self.callback())
 
@@ -129,8 +136,8 @@ class Window(Frame):
             'insert', self.content_of_Element(self.label_2))
 
     # 清除文本框里的内容
-    def clear_event(self):
-        self.text_box_2.delete('0.0', 'end')
+    def clear_event(self, Text_Box):
+        Text_Box.delete('0.0', 'end')
 
     # 传递文本框中输入的内容
     def input_text(self):
