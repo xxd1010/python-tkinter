@@ -1,6 +1,19 @@
 from tkinter import *
 import string
+import pretty_errors
 
+class MsgWindow(Frame):
+    win_label = "通知"
+
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.master = master
+        self.create_widgets()
+        self.pack()
+
+    def create_widgets(self):
+
+        pass
 
 class Window(Frame):
 
@@ -11,6 +24,7 @@ class Window(Frame):
 
     Str = ''
 
+
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.master = master
@@ -19,17 +33,19 @@ class Window(Frame):
 
     def create_widgets(self):
 
-
         self.label_1 = Label(self)
         self.label_1['text'] = '提示：'
 
         self.label_2 = Label(self)
         self.label_2['text'] = "hello"
-        # self.label_2['background'] = "white"                       #背景颜色
-        # self.label_2['width'] = 60                                 #宽度
+        # 背景颜色
+        # self.label_2['background'] = "white"
+        # 宽度
+        # self.label_2['width'] = 60
 
         self.confrom_button_1 = Button(self)
         self.confrom_button_1['text'] = self.confrom_moji
+        # 要执行的命令
         self.confrom_button_1['command'] = self.confrom_event
 
         self.input_button_1 = Button(self)
@@ -45,8 +61,12 @@ class Window(Frame):
         self.clear_button['command'] = self.clear_event
 
         self.text_box_1 = Text(self)
-        self.text_box_1['height'] = 10
-        self.text_box_1['width'] = 80
+        # 字体 (family:字体名, size:大小, weight:字重(normal/bold), slant:倾斜(roman/italic), underline:下划线(True/False), overstrike:删除线(True/False))
+        self.text_box_1['font'] = ('Microsoft YaHei UI', 10)
+        # 文本框高度 单位 行
+        self.text_box_1['height'] = 5
+        # 文本框宽度 单位 字符数
+        self.text_box_1['width'] = 20
         self.text_box_1['wrap'] = 'word'
         self.text_box_1['borderwidth'] = 1
         # self.text_box_1['highlighthickness'] = 1
@@ -58,8 +78,9 @@ class Window(Frame):
         self.text_box_1['yscrollcommand'] = Scrollbar(self, orient=VERTICAL)
 
         self.text_box_2 = Text(self)
-        self.text_box_2['height'] = 20
-        self.text_box_2['width'] = 80
+        self.text_box_2['font'] = ('Microsoft YaHei UI', 10)
+        self.text_box_2['height'] = 10
+        self.text_box_2['width'] = 20
         self.text_box_2['wrap'] = 'word'
         self.text_box_2['borderwidth'] = 1
         self.text_box_2['highlightcolor'] = 'yellow'
@@ -74,19 +95,19 @@ class Window(Frame):
         self.clear_button.grid(row=1, column=2)
         self.input_button_1.grid(row=2, column=2, sticky=S)
 
-        # sticky= 
+        # sticky=
         # 默认居中对齐
         # N 上对齐 S 下对齐 E 右对齐 W 左对齐
         # N+W
 
-        self.text_box_1.grid(row=2, column=1)
-        self.text_box_2.grid(row=3, column=1, columnspan=1)
+        self.text_box_1.grid(row=2, column=0)
+        self.text_box_2.grid(row=3, column=0)
 
         # self.bind("<Button-1>",self.callback())
 
-    def content_of_Element_box(self, Element):
+    def content_of_Element(self, Element):
         return f"{Element['text']}\n"
-        
+
     def confrom_event(self):
         # 根据text中有多少个\n判断有多少行
         row = self.text_box_2.get('0.0', 'end').count('\n')
@@ -95,16 +116,17 @@ class Window(Frame):
         if self.label_2['text'] == "you clicked it" or self.label_2['text'] == "you have clicked it":
             self.label_2['text'] = "you have clicked it"
             self.text_box_2.insert(
-                'insert', self.content_of_Element_box(self.label_2))
+                'insert', self.content_of_Element(self.label_2))
         else:
             self.label_2['text'] = "you clicked it"
             self.text_box_2.insert(
-                'insert', self.content_of_Element_box(self.label_2))
+                'insert', self.content_of_Element(self.label_2))
 
+    # 取消事件
     def cancel_event(self):
         self.label_2['text'] = "you canceled"
         self.text_box_2.insert(
-            'insert', self.content_of_Element_box(self.label_2))
+            'insert', self.content_of_Element(self.label_2))
 
     # 清除文本框里的内容
     def clear_event(self):
@@ -119,7 +141,6 @@ class Window(Frame):
         else:
             self.text_box_2.insert('insert', '')
         self.Str = ''
-
 
     def get_text(self, Element):
         return Element.get('0.0', 'end')
@@ -136,16 +157,34 @@ class Window(Frame):
     def callback(self, event):
         return [event.x, event.y]
 
+    def show_msg_win(self):
+        root_msg = Tk()
+        
+        root_msg.wm_title("Msg")
+        root_msg.geometry("360x120")
+
+        msg_win = MsgWindow(root_msg)
+
+
+class Function():
+
+
+
+    pass
 
 if __name__ == "__main__":
     root = Tk()
     my_app = Window(root)
+
     menubar = Menu(root)
-    menubar.add_command(label="文件", command=my_app.do_nothing)
-    menubar.add_command(label="编辑", command=my_app.do_nothing)
-    menubar.add_command(label="操作", command=my_app.do_nothing)
+    menubar.add_command(label="登录", command=my_app.show_msg_win)
+    menubar.add_command(label="好友", command=my_app.show_msg_win)
+    menubar.add_command(label="操作", command=my_app.show_msg_win)
+    menubar.add_command(label="新窗口", command=my_app.show_msg_win)
     menubar["background"] = "blue"
+
     root.wm_title("My App")
     root.geometry("720x540")
     root.config(menu=menubar)
+    
     root.mainloop()
