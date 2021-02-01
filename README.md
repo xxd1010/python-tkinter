@@ -1,2 +1,2 @@
 # python-tkinter
-用python写的一个GUI程序
+用tkinter写的一个GUI程序
