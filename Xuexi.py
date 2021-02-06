@@ -1,17 +1,21 @@
 # -*- coding:utf-8 -*-
+
 from http import cookiejar
 import os
 import json
 import random
 import time
 from typing import AsyncContextManager
-import urllib.parse
+import urllib
 import http
 import re
 import io
+import js2py
+import execjs
 
 import numpy as np
-from numpy.core.defchararray import decode, encode, replace
+from numpy.core.defchararray import decode, encode, join, replace
+from numpy.lib import arrayterator
 import pretty_errors
 import requests
 from PIL import Image
@@ -172,81 +176,36 @@ def function():
         print(f"{exception}.json     已完成")
         time.sleep(0.5)
 
-# 从网络获取时间戳
 
 
-def getTime():
-    responce = requests.get("https://www.tsa.cn/time.jspx")
-    return responce.json()
 
-# 网络请求
-# 看能不能实现登录百度
+# 解析JS混淆用
 
 
-def urlRequest():
+def jsHunXiao():
 
-    tt = getTime()  # 服务器时间
-    header = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Mobile Safari/537.36 Edg/88.0.705.56",
-        "Accept": "atext/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "Host": "wappass.baidu.com",
-    }
-    name = "想"
-    passwd = "123456789"
-    data = {
-        "name": name,
-        "password": passwd,
-        "time": f"{tt/1000}",
-        "tt": f"{tt}"
-    }
-    data = urllib.parse.urlencode(data)
-    antireplaytoken = f"https://wappass.baidu.com/wp/api/security/antireplaytoken?baiduId=6759F3479F7CAE7EEE0ED6F1FC10A7C9%3AFG%3D1&tpl=undefined&tt={tt}"
-    login = "https://wappass.baidu.com/wp/api/login"
-    check = "https://wappass.baidu.com/v3/login/api/check"
+    a0_0xca16 = ['Latin1', 'OFB', '[object Array]', 'Word', 'sigBytes', '_keyPriorReset', 'words', 'mode', 'ZeroPadding', 'HMAC', 'split', '_iv', 'min', 'string', 'hasOwnProperty', 'prototype', '_rBlock', '_createHmacHelper', 'callback', 'finalize', '_keySchedule', 'Encryptor', 'formatter', 'SHA512', 'call', '_des1', 'indexOf', 'blockSize', 'abs', 'decryptBlock', 'StreamCipher', 'floor', '_nRounds', 'object', '_nDataBytes', '&auto_statistic=', 'HmacSHA384', 'enc', 'function', '0123456789ABCDEF', '_doReset', 'traceid', 'Cipher', 'PasswordBasedCipher', 'charCodeAt', 'Base', 'stringify', 'location', 'high', 'HmacMD5', 'fromCharCode', 'mixIn', 'BlockCipherMode', 'OpenSSL', 'cfg', 'version', 'SHA1', 'elapsed', 'parse', 'substr', 'algo', '{eventType:na-moonshad-error}', '_subKeys', 'HmacSHA512', 'max', '_state', 'length', 'moonshad8moonsh6', 'AES', 'byteOffset', 'execute', 'screen', '_invKeySchedule', 'HmacSHA256', 'moonshadV3', '_oKey', '_reverseMap', 'padding', 'sig', 'HmacRIPEMD160', 'low', 'Decryptor', '_lBlock', '_DEC_XFORM_MODE', '_hasher', 'clamp', 'SerializableCipher', 'pad', 'Rabbit', 'SHA3', 'x64', 'keySize', '//nsclick.baidu.com/v.gif?pid=111&type=1023&v=', 'decrypt', 'SHA384', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/', 'pow', 'CFB', 'ivSize', 'CBC', '&data_source=fe', 'EvpKDF', 'key', '__esModule', 'isArray', '&auto_en=na-monitor', 'alg',
+                 'round', 'WordArray', 'moonshad5moonsh2', 'processBlock', 'undefined', 'toX32', 'outputLength', '_hash', '$super', '_mode', 'iterations', '_doCryptBlock', 'time', 'exports', 'width', 'unpad', 'update', '_cipher', 'BufferedBlockAlgorithm', 'default', 'getTime', 'replace', 'BlockCipher', 'encrypt', 'CipherParams', 'Utf16', '_map', 'sin', 'toStringTag', '_createHelper', 'Hex', 'compute', '0123456789abcdef', '&module=wapna', 'apply', 'Module', 'moonshad3moonsh0', 'reset', '__creator', 'hasher', 'height', 'concat', 'MD5', 'protocol', 'TripleDES', 'CTRGladman', 'createEncryptor', 'HmacSHA3', 'RC4', '_append', '_doProcessBlock', '_counter', 'Iso10126', 'toString', 'defineProperty', '&extrajson=', 'lib', '[object Object]', 'encryption', '_ENC_XFORM_MODE', 'ceil', 'charAt', '_xformMode', 'shaOne', 'init', 'HmacSHA1', '_keystream', 'Utf16LE', 'slice', 'kdf', 'encryptBlock', '_invSubKeys', '_key', 'ciphertext', 'create', 'extend', 'null', 'join', 'Utf8', 'moonshad1moonsh9', 'random', 'Pkcs7', 'PBKDF2', '_data', 'SHA256', 'sort', '_des3', 'RIPEMD160', 'Malformed UTF-8 data', '_doFinalize', 'splice', '_minBufferSize', 'clone', 'buffer', 'NoPadding', '&monitorType=moonshadErrors', 'CTR', 'moonshad0moonsh1', 'Iso97971', 'byteLength', '_process', '_parse', 'JSON', 'ECB', 'sqrt', '_iKey', 'push', 'substring', 'salt', 'format', 'createDecryptor', '_prevBlock', 'SHA224', '_des2', 'Hasher']
 
-    url_get_publickey = "https://passport.baidu.com/v2/getpublickey"
+    file = []
 
-    session = requests.session()
-    params = {"tt": f"{tt}", "time": f"{tt/1000}"}
-    responce = session.request('get', url_get_publickey, cookies=requests.cookies.RequestsCookieJar(
-    ), data=urllib.parse.urlencode(params))
+    with open("./baidu/0005.js", 'r') as f:
+        file = f.readlines()
 
-    fp = "./temp.json"
+    pattern = re.compile(r"\('0x(.*?)'\)")
 
-    res = responce.content.decode('utf-8')
+    def _sub(matched):
+        n = matched.group()
+        # print(n[2:-2])
+        m = int(f"{n[2:-2]}", 16)
+        return f"('{a0_0xca16[m]}')"
 
-    # res = eval("{}".format(res))
+    tem = []
+    for i in range(len(file)):
+        # 用sub函数进行替换
+        # repl 传入的是一个函数
+        tem.append(re.sub(pattern, _sub, file[i]))
 
-    # dic = json.dumps(res)
-    # ----->
-    # dic = json.dumps(eval(res))
-    # dic = json,loads(dic)
-
-    # -------------json模块处理字符串时，字符串内不能使用'单引号 将单引号替换成双引号
-    # new_res = res.replace("'", '"')
-    # -------------eval()   太智能了,这里将 str--->---dict
-    dic_pubkey = eval(res)
-
-    # 正则匹配还行
-    # pattern = r"-----BEGIN PUBLIC KEY-----\n(.*?)\n-----END PUBLIC KEY-----"
-
-    # pattern = re.compile("{(.*?)}")
-    # r = pattern.match(res)
-
-    # with open(fp, 'r') as f:
-    #     tmp = f.read()
-    #     print(tmp)
-    #     dic = json.load(f)
-    # dic = json.loads(dic)
-
-    print(dic_pubkey['pubkey'])
-
-    # for name, value in responce.cookies.items():
-    #     header['Cookie'] + f"{name}={value};"
-    #     print(header)
-    res = session.request('post', login, headers=header,
-                          data=data, cookies=responce.cookies)
-    json_res = res.json()
-
-
-urlRequest()
+    with open('./baidu/0006.js', 'w') as f:
+        for i in range(len(tem)):
+            f.write(tem[i])
